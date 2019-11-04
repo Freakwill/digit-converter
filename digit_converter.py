@@ -44,7 +44,7 @@ class DigitConverter(BaseConverter):
     real number <-> list of digits
 
     base: uint, base of system
-    place: int, 1.111 * base^place
+    exponent: int, 1.111 * base^exponent
     sign[None]: the sign of number
     number_format: apply to the result of .tonumber
 
@@ -55,10 +55,10 @@ class DigitConverter(BaseConverter):
 
     [0, 0, 1, 2, 2, 2] <-> 12.22
     '''
-    def __init__(self, base=2, place=1, sign=None):
+    def __init__(self, base=2, exponent=1, sign=None):
         super(DigitConverter, self).__init__()
         self.__base = base
-        self.place = place
+        self.exponent = exponent
         self.sign = sign
         self.number_format = None
 
@@ -88,20 +88,20 @@ class DigitConverter(BaseConverter):
             a number
         '''
         # assert np.all(lst < self.base)
-        res = sum(digit * self.base ** (self.place - k) for k, digit in enumerate(lst))
+        res = sum(digit * self.base ** (self.exponent - k) for k, digit in enumerate(lst))
         if self.number_format is None:
             return res
         else:
             return self.number_format(res)
 
     def pretty(self, lst):
-        return ' + '.join(f'{digit}*{self.base}^{(self.place - k)}' for k, digit in enumerate(lst))
+        return ' + '.join(f'{digit}*{self.base}^{(self.exponent - k)}' for k, digit in enumerate(lst))
 
     def scientific(self, lst):
-        return f"{lst[0]}.{' '.join(lst[1:])} X {self.base}^{self.place}"
+        return f"{lst[0]}.{' '.join(lst[1:])} X {self.base}^{self.exponent}"
 
     def isint(self, lst):
-        return np.all(digit == 0 for k, digit in enumerate(lst) if k > self.place)
+        return np.all(digit == 0 for k, digit in enumerate(lst) if k > self.exponent)
 
     def tolist(self, num, L=8):
         """number -> list with length L
@@ -129,7 +129,7 @@ class DigitConverter(BaseConverter):
                 break
             else:
                 I = q
-        lst = [0] * (self.place + 1 - len(lst)) + lst
+        lst = [0] * (self.exponent + 1 - len(lst)) + lst
         while D > 0:
             num = D * b
             I = int(np.floor(num))
@@ -260,7 +260,7 @@ class IntervalConverter(IntegerConverter):
 
 
 # define Converter of numbers 0~255
-_256Converter = BinaryConverter(place=7)
+_256Converter = BinaryConverter(exponent=7)
 f = lambda obj, x: int(super(BinaryConverter, obj).tonumber(x))
 _256Converter.tonumber = types.MethodType(f, _256Converter)
 _256Converter.fix_len(8)
@@ -271,7 +271,7 @@ _unitIntervalConverter = IntervalConverter()
 if __name__ == '__main__':
     print(f'256-converter: {_256Converter.tonumber([1,0,1,0,1,1,1,0])}<->{_256Converter.tolist(174)}')
 
-    c = BinaryConverter(place=4)
+    c = BinaryConverter(exponent=4)
     d = c.tolist(12.223, L=8)
     print(f'binary-converter: {d}<->{c.tonumber(d)}={c.pretty(d)}')
 

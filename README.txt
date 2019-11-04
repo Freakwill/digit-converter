@@ -41,7 +41,7 @@ Codes::
 
     print(f'256-converter: {_256Converter.tonumber([1,0,1,0,1,1,1,0])}<->{_256Converter.tolist(174)}')
 
-    c = BinaryConverter(place=4)
+    c = BinaryConverter(exponent=4)
     d = c.tolist(12.223, L=8)
     print(f'binary-converter: {d}<->{c.tonumber(d)}={c.pretty(d)}')
     c = IntervalConverter(a=0, b=10)
