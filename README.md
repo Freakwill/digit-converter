@@ -1,6 +1,6 @@
 # digit_converter
 A cool tool for digits converting. It could be applied in GA.
-
+It transforms a number to a list of digits under any base.
 
 ## Abstract
 
@@ -17,8 +17,10 @@ Content
 
 Classes:
 ```
-    BaseConverter: .tonumber(lst), .tolist(num, L)
-    DigitConverter
+    BaseConverter: 
+        .tonumber(lst), .tolist(num, L)
+        
+    DigitConverter:
     BinaryConverter: subclass of DigitConverter
     IntervalConverter
 ```
@@ -27,6 +29,7 @@ Objects:
     colorConverter: instance of BinaryConverter
     unitIntervalConverter: instance of IntervalConverter  == IntervalConverter(lb=0, ub=1)
 ```
+
 Grammar
 =========
 
@@ -36,6 +39,7 @@ import
 ```python
 import digit_converter
 ```
+
 Basic usage
 -------------
 ```pyhon
