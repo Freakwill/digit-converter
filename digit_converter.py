@@ -217,22 +217,34 @@ class IntegerConverter(DigitConverter):
 
 class IntervalConverter(IntegerConverter):
     """Convert numbers in an interval
+
+    Inherit IntegerConverter, since the element in an interval corresponds an integer
+    as the order.
     
     Take base 2 as an example, map the number before converting
-    n -> (n-a)/(b-a)*2^L, with base 2.
+    n -> (n-lb)/(ub-lb)*2^L, with base 2.
     Finally, we should have
-    a -> -> [0,0,...0]
-    b -> -> [1,1,...1]
+    lb -> -> [0,0,...0]
+    ub -> -> [1,1,...1]
     
     Extends:
         IntegerConverter
     """
 
-    def __init__(self, a=0, b=1, *args, **kwargs):
+    def __init__(self, lb=0, ub=1, *args, **kwargs):
+        """
+        Arguments:
+            *args {[type]} -- [description]
+            **kwargs {[type]} -- [description]
+        
+        Keyword Arguments:
+            lb {number} -- the lower bound of the interval (default: {0})
+            ub {number} -- the upper bound (default: {1})
+        """
         super(IntervalConverter, self).__init__(*args, **kwargs)
-        self.a = a
-        self.b = b
-        self.h = b-a
+        self.lb = lb
+        self.ub = ub
+        self.h = ub-lb
         
 
     def tonumber(self, lst):
@@ -250,33 +262,33 @@ class IntervalConverter(IntegerConverter):
         # assert np.all(lst < self.base)
         res = super(IntervalConverter, self).tonumber(lst)
         N = self.base ** len(lst)
-        return self.a + self.h * res/N
+        return self.lb + self.h * res/N
 
     def tolist(self, num, L=8):
         # assert self.a <= num <= self.b
         N = self.base ** L
-        num = int((num - self.a)*N / (self.h))
+        num = int((num - self.lb)*N / (self.h))
         return super(IntervalConverter, self).tolist(num, L)
 
 
 # define Converter of numbers 0~255
-_256Converter = BinaryConverter(exponent=7)
+colorConverter = BinaryConverter(exponent=7)
 f = lambda obj, x: int(super(BinaryConverter, obj).tonumber(x))
-_256Converter.tonumber = types.MethodType(f, _256Converter)
-_256Converter.fix_len(8)
+colorConverter.tonumber = types.MethodType(f, colorConverter)
+colorConverter.fix_len(8)
 
-_unitIntervalConverter = IntervalConverter()
+unitIntervalConverter = IntervalConverter()
 
 
 if __name__ == '__main__':
-    print(f'256-converter: {_256Converter.tonumber([1,0,1,0,1,1,1,0])}<->{_256Converter.tolist(174)}')
+    print(f'256-converter: {colorConverter.tonumber([1,0,1,0,1,1,1,0])}<->{colorConverter.tolist(174)}')
 
-    c = BinaryConverter(exponent=4)
+    c = BinaryConverter(exponent=3)
     d = c.tolist(12.223, L=8)
     print(f'binary-converter: {d}<->{c.tonumber(d)}={c.pretty(d)}')
 
-    c = IntervalConverter(a=0, b=10)
+    c = IntervalConverter(lb=0, ub=10)
     d = c.tolist(2.4, L=8)
-    print(f'[{c.a},{c.b}]-converter: {d}<->{c.tonumber(d)}={c.pretty(d)}')
+    print(f'[{c.lb},{c.ub}]-converter: {d}<->{c(d)}={c.pretty(d)}')
 
     #[0, 0, 1, 2, 2, 2] <-> 12.22
