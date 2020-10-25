@@ -1,0 +1,28 @@
+language: python
+
+python:
+  - "3.6"
+  - "3.7"
+  - "3.8"
+
+install:
+  - pip install numpy
+  
+before_script:
+  - pip install pytest
+
+script:
+  - poetry build
+  - pytest test.py
+
+deploy: 
+provider: pypi
+  distributions: "poetry publish"
+  user: "Williamzjc"
+  password:
+  on:
+    tags: true
+    python: 3.8
+
+notifications:
+  email: false
