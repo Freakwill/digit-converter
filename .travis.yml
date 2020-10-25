@@ -7,7 +7,9 @@ python:
 
 install: pip install numpy
   
-before_script: pip install pytest
+before_script: 
+  - pip install pytest
+  - pip install poetry
 
 script:
   - poetry build
