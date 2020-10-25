@@ -16,13 +16,13 @@ script:
   - pytest test.py
 
 deploy: 
-provider: pypi
-  distributions: "poetry publish"
-  user: "Williamzjc"
-  password:
-  on:
-    tags: true
-    python: 3.8
+  provider: pypi
+    distributions: "poetry publish"
+    user: "Williamzjc"
+    password:
+    on:
+      tags: true
+      python: 3.8
 
 notifications:
   email: false
