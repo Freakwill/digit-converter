@@ -18,8 +18,12 @@ class Test_DC:
         n = 2.4
         print(f'Interval [{lb}, {ub}] converter: 2.4 <-> [0, 2, 6, 6, 6, 6, 6, 6]')
         c = IntervalConverter(lb=lb, ub=ub)
-        d = c.tolist(n=n, L=8)
+        d = c.tolist(num=n, L=8)
         assert d == [0, 2, 6, 6, 6, 6, 6, 6] or (c(d)-n) < 0.1 
-        
+
+    def test_pretty(self):
+        c = BinaryConverter(exponent=3)
+        assert c.pretty([1, 1, 0, 0, 0, 0, 1, 1]) == '2^{3} + 2^{2} + 2^{-3} + 2^{-4}'        
+
 if __name__ == '__main__':
     pytest.main("-s test_dc.py")
