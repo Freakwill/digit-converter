@@ -25,6 +25,7 @@ def length(num):
 
 
 def toint(lst, base=10):
+    # all numbers in lst are positive
     return sum(digit * base ** k for k, digit in enumerate(lst[::-1]))
 
 
@@ -32,9 +33,13 @@ class BaseConverter(object):
     '''type converter'''
     
     def tonumber(self, l):
+        '''list -> number 
+        transform a list (or an iterable obj) to a number
+        '''
         raise NotImplementedError
 
-    def tolist(self, n, L):
+    def tolist(self, n, L:int):
+        # as the inverse of tonumber
         raise NotImplementedError
 
 
@@ -43,12 +48,13 @@ class DigitConverter(BaseConverter):
 
     real number <-> list of digits
 
-    base: uint, base of system
-    exponent: int, 1.111 * base^exponent
-    sign[None]: the sign of number
-    number_format: apply to the result of .tonumber
+    Arguments:
+        base: uint, base of system
+        exponent: int, 1.111 * base^exponent
+        sign[None]: the sign of number
+        number_format: apply to the result of .tonumber
 
-    example:
+    Example:
     c = DigitConverter(10, 3)
     d = c.tolist(12.223, 6)
     print(d, '<->' ,c.tonumber(d))
@@ -95,10 +101,14 @@ class DigitConverter(BaseConverter):
             return self.number_format(res)
 
     def pretty(self, lst):
-        return ' + '.join(f'{digit}*{self.base}^{(self.exponent - k)}' for k, digit in enumerate(lst))
+
+        return ' + '.join(f'{self.base}^{{{self.exponent - k}}}' if digit == 1 else f'{digit}*{self.base}^{{{self.exponent - k}}}' for k, digit in enumerate(lst) if digit !=0)
 
     def scientific(self, lst):
-        return f"{lst[0]}.{' '.join(lst[1:])} X {self.base}^{self.exponent}"
+        if self.exponent == 0:
+            return f"{lst[0]}.{' '.join(lst[1:])}"
+        else:
+            return f"{lst[0]}.{' '.join(lst[1:])} X {self.base}^{self.exponent}"
 
     def isint(self, lst):
         return np.all(digit == 0 for k, digit in enumerate(lst) if k > self.exponent)
@@ -201,7 +211,7 @@ class IntegerConverter(DigitConverter):
         Returns:
             a list
         """
-
+        self.exponent = L - 1
         b = self.base
         lst = []
 
@@ -217,9 +227,6 @@ class IntegerConverter(DigitConverter):
 
 class IntervalConverter(IntegerConverter):
     """Convert numbers in an interval
-
-    Inherit IntegerConverter, since the element in an interval corresponds an integer
-    as the order.
     
     Take base 2 as an example, map the number before converting
     n -> (n-lb)/(ub-lb)*2^L, with base 2.
@@ -233,10 +240,6 @@ class IntervalConverter(IntegerConverter):
 
     def __init__(self, lb=0, ub=1, *args, **kwargs):
         """
-        Arguments:
-            *args {[type]} -- [description]
-            **kwargs {[type]} -- [description]
-        
         Keyword Arguments:
             lb {number} -- the lower bound of the interval (default: {0})
             ub {number} -- the upper bound (default: {1})
@@ -265,6 +268,19 @@ class IntervalConverter(IntegerConverter):
         return self.lb + self.h * res/N
 
     def tolist(self, num, L=8):
+        """[summary]
+        
+        [description]
+        
+        Arguments:
+            num {number} -- the number will be converted
+        
+        Keyword Arguments:
+            L {number} -- the length of list (default: {8})
+        
+        Returns:
+            [type] -- [description]
+        """
         # assert self.a <= num <= self.b
         N = self.base ** L
         num = int((num - self.lb)*N / (self.h))
@@ -281,7 +297,7 @@ unitIntervalConverter = IntervalConverter()
 
 
 if __name__ == '__main__':
-    print(f'256-converter: {colorConverter.tonumber([1,0,1,0,1,1,1,0])}<->{colorConverter.tolist(174)}')
+    print(f'color-converter: {colorConverter.tonumber([1,0,1,0,1,1,1,0])}<->{colorConverter.tolist(174)}')
 
     c = BinaryConverter(exponent=3)
     d = c.tolist(12.223, L=8)
@@ -289,6 +305,8 @@ if __name__ == '__main__':
 
     c = IntervalConverter(lb=0, ub=10)
     d = c.tolist(2.4, L=8)
-    print(f'[{c.lb},{c.ub}]-converter: {d}<->{c(d)}={c.pretty(d)}')
+    print(f'[{c.lb},{c.ub}]-converter: {d}<->{c(d)} -> {c.pretty(d)}-th number')
 
-    #[0, 0, 1, 2, 2, 2] <-> 12.22
+    c = DigitConverter(base=16)
+    d = c.tolist(2.4, L=8)
+    print(f'16-converter: {d}<->{c(d)}={c.pretty(d)}')
