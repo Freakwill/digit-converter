@@ -1,7 +1,8 @@
 from digit_converter import *
 
 class Test_DC:
-    # 
+    # test
+    
     def test_color(self):
         print('Color converter as a special binary converter:')
         assert colorConverter.tonumber([1,0,1,0,1,1,1,0]) == 174

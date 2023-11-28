@@ -12,6 +12,8 @@ Main Classes:
     IntervalConverter
 """
 
+__version__ = "2.1"
+
 import types
 
 import numpy as np
