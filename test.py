@@ -19,7 +19,7 @@ class Test_DC:
         print(f'Interval [{lb}, {ub}] converter: 2.4 <-> [0, 2, 6, 6, 6, 6, 6, 6]')
         c = IntervalConverter(lb=lb, ub=ub)
         d = c.tolist(num=n, L=8)
-        assert d == [0, 2, 6, 6, 6, 6, 6, 6] or (c(d)-n) < 0.1 
+        assert d == [0, 2, 6, 6, 6, 6, 6, 6] or abs(c(d)-n) < 0.1 
 
     def test_pretty(self):
         c = BinaryConverter(exponent=3)

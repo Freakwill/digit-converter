@@ -5,7 +5,7 @@
 BaseClass:
 BaseConverter
     tonumber(lst) -> number
-    tolist(number, L) -> list
+    tolist(number, L) -> list (Digits)
 
 Classes:
 BinaryConverter
@@ -13,6 +13,12 @@ IntervalConverter
 """
 
 import types
+try:
+    from collections.abc import Iterable
+    Digits = Iterable[int]
+except:
+    from typing import Iterable
+    Digits = Iterable[int]
 
 import numpy as np
 
@@ -29,8 +35,9 @@ def toint(lst, base=10):
     return sum(digit * base ** k for k, digit in enumerate(lst[::-1]))
 
 
-class BaseConverter(object):
+class BaseConverter:
     """type converter
+
     transform a list to a number and reversely
     """
     
@@ -54,7 +61,6 @@ class DigitConverter(BaseConverter):
         base: uint, base of system
         exponent: int, 1.111 * base^exponent
         sign[None]: the sign of number
-        number_format: apply to the result of .tonumber
 
     Example:
     c = DigitConverter(10, 3)
@@ -69,7 +75,6 @@ class DigitConverter(BaseConverter):
         self.__base = base
         self.exponent = exponent
         self.sign = sign
-        self.number_format = None
 
 
     @property
@@ -87,8 +92,8 @@ class DigitConverter(BaseConverter):
         return self.sign * self(lst)
 
 
-    def tonumber(self, lst):
-        '''list -> number
+    def tonumber(self, lst:Digits):
+        """list -> number
         
         transform a list (or an iterable obj) to a number
         make sure all elements in lst < .base
@@ -98,20 +103,22 @@ class DigitConverter(BaseConverter):
         
         Returns:
             a number
-        '''
+        """
         # assert np.all(lst < self.base)
         res = sum(digit * self.base ** (self.exponent - k) for k, digit in enumerate(lst))
-        if self.number_format is None:
-            return res
-        else:
-            return self.number_format(res)
+        return self.postprocess(res)
+
+    def postprocess(self, x):
+        return x
 
 
-    def pretty(self, lst):
-        return ' + '.join(f'{self.base}^{{{self.exponent - k}}}' if digit == 1 else f'{digit}*{self.base}^{{{self.exponent - k}}}' for k, digit in enumerate(lst) if digit !=0)
+    def pretty(self, lst:Digits) -> str:
+        return ' + '.join(f'{self.base}^{{{self.exponent - k}}}' if digit == 1 else f'{digit}*{self.base}^{{{self.exponent - k}}}'
+            for k, digit in enumerate(lst) if digit !=0)
 
 
-    def scientific(self, lst):
+    def scientific(self, lst:Digits) -> str:
+        # scientific notation
         if self.exponent == 0:
             return f"{lst[0]}.{' '.join(lst[1:])}" 
         elif self.exponent == 1:
@@ -120,11 +127,12 @@ class DigitConverter(BaseConverter):
             return f"{lst[0]}.{' '.join(lst[1:])} X {self.base}^{self.exponent}"
 
 
-    def isint(self, lst):
+    def isint(self, lst:Digits) -> bool:
+        # `lst` represents an integer
         return np.all(digit == 0 for k, digit in enumerate(lst) if k > self.exponent)
 
 
-    def tolist(self, num, L=8):
+    def tolist(self, num, L=8) -> Digits:
         """number -> list with length L
         
         The core of the code
@@ -203,13 +211,9 @@ class IntegerConverter(DigitConverter):
             a number
         """
         # assert np.all(lst < self.base)
-        res = toint(lst, base=self.base)
-        if self.number_format is None:
-            return res
-        else:
-            return self.number_format(res)
+        return toint(lst, base=self.base)
 
-    def tolist(self, num, L=8)->list:
+    def tolist(self, num, L=8):
         """int -> list with length L
         
         The core of the code
@@ -243,8 +247,8 @@ class IntervalConverter(IntegerConverter):
     Take base 2 as an example, map the number before converting
     n -> (n-lb)/(ub-lb)*2^L, with base 2.
     Finally, we should have
-    lb -> -> [0,0,...0]
-    ub -> -> [1,1,...1]
+    lb --> [0,0,...0]
+    ub --> [1,1,...1]
     
     Extends:
         IntegerConverter
@@ -290,7 +294,7 @@ class IntervalConverter(IntegerConverter):
             L {number} -- the length of list (default: {8})
         
         Returns:
-            [type] -- [description]
+            Iterable -- list of digits
         """
         # assert self.a <= num <= self.b
         N = self.base ** L
@@ -304,6 +308,7 @@ f = lambda obj, x: int(super(BinaryConverter, obj).tonumber(x))
 colorConverter.tonumber = types.MethodType(f, colorConverter)
 colorConverter.fix_len(8)
 
+# converter for the numbers on unit interval [0, 1] with default parameters.
 unitIntervalConverter = IntervalConverter()
 
 
@@ -321,3 +326,4 @@ if __name__ == '__main__':
     c = DigitConverter(base=16)
     d = c.tolist(2.4, L=8)
     print(f'16-converter: {d}<->{c(d)}={c.pretty(d)}')
+
