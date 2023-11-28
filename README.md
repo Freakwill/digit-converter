@@ -1,19 +1,15 @@
 # digit_converter
-A cool tool for digits converting. It could be applied in GA.
-It transforms a number to a list of digits under any base.
+
+A useful tool for digit conversion, applicable in Genetic Algorithms (GA). It transforms a number into a list of digits under any base, for example, `[1, 0, 1, 0, 1, 1, 1, 0] <-> 174`. 🔢
 
 ## Abstract
 
-A cool tool for digits converting.
+A cool tool for digits converting. It transforms a number to a list and verse vice, such as represent a number by a binary list.
+It could be applied in GA.
 
-It could be applied in GA
+**Keywords** Converter, Digits
 
-## Keywords
-
-Converter, Digits
-
-Content
-=========
+## Classes and Objects
 
 Classes:
 ```
@@ -30,18 +26,16 @@ Objects:
     unitIntervalConverter: instance of IntervalConverter  == IntervalConverter(lb=0, ub=1)
 ```
 
-Grammar
-=========
+## Grammar
+Install the lib, by `pip install digit_converter`
 
-import
--------------
+### Import
 
 ```python
 import digit_converter
 ```
 
-Basic usage
--------------
+### Basic usage
 
 ```pyhon
 print('=*= Example 1 =*=')
