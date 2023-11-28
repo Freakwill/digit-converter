@@ -1,6 +1,5 @@
 from digit_converter import *
 
-import pytest
 class Test_DC:
     # 
     def test_color(self):
@@ -26,4 +25,5 @@ class Test_DC:
         assert c.pretty([1, 1, 0, 0, 0, 0, 1, 1]) == '2^{3} + 2^{2} + 2^{-3} + 2^{-4}'        
 
 if __name__ == '__main__':
-    pytest.main("-s test_dc.py")
+    import pytest
+    pytest.main("-s test.py")
