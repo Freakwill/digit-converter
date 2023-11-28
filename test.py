@@ -27,4 +27,4 @@ class Test_DC:
 
 if __name__ == '__main__':
     import pytest
-    pytest.main("-s test.py")
+    pytest.main("-s test_dc.py")
