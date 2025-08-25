@@ -1,10 +1,10 @@
 
 [project]
 name = "digit_converter"
-version = "2.1"
+version = "2.2"
 description = "A useful tool for digit conversion, applicable in Genetic Algorithms (GA). It transforms a number into a list of digits under any base, for example, `[1, 0, 1, 0, 1, 1, 1, 0] <-> 174`."
 authors = ["William Song <30965609+Freakwill@users.noreply.github.com>"]
-license = "MIT"
+license = { text = "MIT" }
 readme = "README.md"
 
 [project.urls]
