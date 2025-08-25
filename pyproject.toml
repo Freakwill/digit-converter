@@ -1,13 +1,17 @@
-[tool.poetry]
+
+[project]
 name = "digit_converter"
 version = "2.1"
 description = "A useful tool for digit conversion, applicable in Genetic Algorithms (GA). It transforms a number into a list of digits under any base, for example, `[1, 0, 1, 0, 1, 1, 1, 0] <-> 174`."
 authors = ["William Song <30965609+Freakwill@users.noreply.github.com>"]
-
 license = "MIT"
 readme = "README.md"
+
+[project.urls]
 homepage = "https://github.com/Freakwill/digit_converter"
 repository = "https://github.com/Freakwill/digit_converter"
+
+[tool.poetry]
 keywords = ["Digit Converting", "Encoding", "Genetic Algorithm"]
 classifiers = [
     'License :: Public Domain',  # Public Domain
@@ -18,12 +22,13 @@ classifiers = [
     'Topic :: Scientific/Engineering :: Mathematics',
     'Natural Language :: English'
 ]
+
 [tool.poetry.dependencies]
 python = "^3.7"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
+pytest = "^7.0"
 
 [build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+requires = ["poetry-core>=1.0"]
+build-backend = "poetry.core.masonry.api"
