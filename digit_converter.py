@@ -10,6 +10,13 @@ BaseClass:
 Main Classes:
     BinaryConverter
     IntervalConverter
+
+Example:
+    from digit_converter import *
+    c = DigitConverter(10, 3) # 0.01222 * (10 ^3)
+    d = c.tolist(12.223, 6)
+    print(d, '<->' ,c.tonumber(d))
+    # [0, 0, 1, 2, 2, 2] <-> 12.22
 """
 
 import types
@@ -83,9 +90,6 @@ class DigitConverter(BaseConverter):
     def base(self):
         return self.__base
 
-    def __call__(self, lst:List[int]):
-        return self.tonumber(lst)
-
     def tonumber_sign(self, lst:List[int]):
         if self.sign is None:
             return self(lst)
@@ -111,18 +115,33 @@ class DigitConverter(BaseConverter):
         else:
             return self.number_format(res)
 
-    def pretty(self, lst:List[int]):
+    def __call__(self, lst):
+        return self.tonumber(lst)
 
+    def pretty(self, lst:List[int]):
+        # print the list in the polynomial form
         return ' + '.join(f'{self.base}^{{{self.exponent - k}}}' if digit == 1 else f'{digit}*{self.base}^{{{self.exponent - k}}}'
          for k, digit in enumerate(lst) if digit !=0)
 
     def scientific(self, lst:List[int]):
+        """
+        Convert a list of integers to a scientific notation string.
+        If the exponent is 0, it returns the first element of the list followed by `.` and the remaining elements joined by spaces. 
+        Otherwise, it will be appended an 'X', the base, and the exponent.
+
+        Args:
+            lst (List[int]): The list of integers to be converted.
+
+        Returns:
+            str: The scientific notation string representation.
+        """
         if self.exponent == 0:
             return f"{lst[0]}.{' '.join(lst[1:])}"
         else:
             return f"{lst[0]}.{' '.join(lst[1:])} X {self.base}^{self.exponent}"
 
     def isint(self, lst:List[int])->bool:
+        # Whether it represents an integer.
         return np.all(digit == 0 for k, digit in enumerate(lst) if k > self.exponent)
 
     def tolist(self, num, L=8)->list:
