@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-"""Convert a number to an array of digits, and inversely
+"""Convert a number to an array of digits, and inversely.
+It can be applied in optimization by GA.
 
 BaseClass:
     BaseConverter
