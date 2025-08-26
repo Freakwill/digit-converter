@@ -1,22 +1,20 @@
-
 [project]
 name = "digit_converter"
-version = "2.2"
+version = "2.1"
 description = "A useful tool for digit conversion, applicable in Genetic Algorithms (GA). It transforms a number into a list of digits under any base, for example, `[1, 0, 1, 0, 1, 1, 1, 0] <-> 174`."
-authors = ["William Song <30965609+Freakwill@users.noreply.github.com>"]
-license = { text = "MIT" }
+license = "MIT"
 readme = "README.md"
 
 [project.urls]
-homepage = "https://github.com/Freakwill/digit_converter"
-repository = "https://github.com/Freakwill/digit_converter"
+homepage = "https://github.com/Freakwill/digit-converter"
+repository = "https://github.com/Freakwill/digit-converter"
 
 [tool.poetry]
 keywords = ["Digit Converting", "Encoding", "Genetic Algorithm"]
 classifiers = [
     'License :: Public Domain',  # Public Domain
     'Programming Language :: Python',
-    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3',
     'Intended Audience :: Science/Research',
     'Operating System :: OS Independent',
     'Topic :: Scientific/Engineering :: Mathematics',
