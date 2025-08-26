@@ -198,7 +198,7 @@ class DigitConverter(BaseConverter):
         """To separate a number into its integer part and fractional part.
         """
 
-        l = self.tolist(num, L:int)
+        l = self.tolist(num, L)
         return l[:self.exponent+1], l[self.exponent+1:]
 
 
@@ -206,6 +206,11 @@ class BinaryConverter(DigitConverter):
     """
     Converter for binary system
     base = 2
+
+    Example:
+        c = colorConverter   # colorConverter = BinaryConverter(exponent=7)
+        d = c.tolist(12.223)
+        print(d, '<->' ,c.tonumber(d))
     """
 
     def __init__(self, *args, **kwargs):
@@ -332,7 +337,7 @@ class IntervalConverter(IntegerConverter):
 
 # define Converter of numbers 0~255
 colorConverter = BinaryConverter(exponent=7)
-f = lambda obj, x: int(obj.tonumber(x))
+f = lambda obj, x: int(super(BinaryConverter, obj).tonumber(x))
 colorConverter.tonumber = types.MethodType(f, colorConverter)
 colorConverter.fix_len(8)
 
